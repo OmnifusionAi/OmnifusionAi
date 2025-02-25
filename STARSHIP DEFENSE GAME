@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>First-Person Space Shooter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    * {
+      touch-action: none;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    body {
+      margin: 0;
+      background: #000;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background: transparent;
+      border: 2px solid #222;
+    }
+    /* Top HUD elements */
+    #score, #lasers, #health, #level {
+      position: absolute;
+      top: 20px;
+      color: #0ff;
+      font-family: Arial, sans-serif;
+      font-size: 24px;
+      z-index: 2;
+      text-shadow: 0 0 5px #0ff;
+    }
+    #score  { left: 20px; }
+    #lasers { right: 20px; }
+    #health { left: 50%; transform: translateX(-50%); }
+    #level  { top: 60px; left: 50%; transform: translateX(-50%); }
+
+    /* Game Over screen */
+    #gameOver {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.9);
+      color: #0ff;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      z-index: 3;
+      text-shadow: 0 0 5px #0ff;
+    }
+    #restartBtn {
+      background: #0ff;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+    #restartBtn:hover { background: #0cc; }
+
+    /* Controls */
+    #controls {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .control-area {
+      flex: 1;
+      height: 100%;
+      pointer-events: auto;
+    }
+    #laserBtn {
+      position: absolute;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 60px;
+      background: #00ffff;
+      border-radius: 50%;
+      pointer-events: auto;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      text-shadow: none;
+      border: 2px solid #0ff;
+    }
+    #laserBtn:active { background: #00cccc; }
+    .control-overlay {
+      position: absolute;
+      color: #0ff;
+      font-family: Arial, sans-serif;
+      font-size: 24px;
+      opacity: 0.5;
+      pointer-events: none;
+      bottom: 50px;
+      text-align: center;
+      width: 40%;
+      text-shadow: 0 0 5px #0ff;
+    }
+    #leftOverlay { left: 5%; }
+    #rightOverlay { right: 5%; }
+  </style>
+</head>
+<body>
+  <!-- HUD Elements -->
+  <div id="score">Score: 0</div>
+  <div id="health">Health: 100</div>
+  <div id="lasers">Lasers: 5</div>
+  <!-- If you have level logic, keep it; or remove if not using levels. -->
+  <div id="level">Level: 1</div>
+
+  <!-- Game Over screen -->
+  <div id="gameOver">
+    <h2>Game Over!</h2>
+    <p>Your Score: <span id="finalScore">0</span></p>
+    <p>High Score: <span id="highScore">0</span></p>
+    <button id="restartBtn">Play Again</button>
+  </div>
+
+  <!-- Canvas for rendering the game -->
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- Touch areas for left/right controls -->
+  <div id="controls">
+    <div id="leftControl" class="control-area"></div>
+    <div id="rightControl" class="control-area"></div>
+  </div>
+
+  <!-- Fire button -->
+  <div id="laserBtn">Fire</div>
+
+  <!-- Overlays that vanish after 3 seconds -->
+  <div id="leftOverlay" class="control-overlay">Tap Left</div>
+  <div id="rightOverlay" class="control-overlay">Tap Right</div>
+
+  <!-- Audio placeholders (replace src with actual sound files) -->
+  <audio id="laserSound" src="laser.mp3"></audio>
+  <audio id="pickupSound" src="pickup.mp3"></audio>
+  <audio id="healthSound" src="health.mp3"></audio>
+  <audio id="collisionSound" src="collision.mp3"></audio>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    // Set canvas to full screen (portrait)
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const scoreElement = document.getElementById('score');
+    const healthElement = document.getElementById('health');
+    const lasersElement = document.getElementById('lasers');
+    const levelElement = document.getElementById('level'); // if using levels
+    const gameOverScreen = document.getElementById('gameOver');
+    const finalScoreElement = document.getElementById('finalScore');
+    const highScoreElement = document.getElementById('highScore');
+    const restartBtn = document.getElementById('restartBtn');
+    const leftControl = document.getElementById('leftControl');
+    const rightControl = document.getElementById('rightControl');
+    const laserBtn = document.getElementById('laserBtn');
+    const leftOverlay = document.getElementById('leftOverlay');
+    const rightOverlay = document.getElementById('rightOverlay');
+
+    // Hide control overlays after 3 seconds
+    setTimeout(() => {
+      leftOverlay.style.display = 'none';
+      rightOverlay.style.display = 'none';
+    }, 3000);
+
+    // Basic perspective and game constants for portrait mode
+    const horizonY = canvas.height * 0.3;
+    const focalLength = canvas.height * 0.4;
+    const corridorWidth = canvas.width * 0.8;
+    let laneCount = 3;   // you can keep your lane logic
+    let laneWidth = corridorWidth / laneCount;
+    let laneCenters = [];
+    for (let k = 0; k < laneCount; k++) {
+      laneCenters.push(-corridorWidth / 2 + (k + 0.5) * laneWidth);
+    }
+    const farZ = 1000;
+
+    // Starfield background (now each star moves to simulate flight)
+    const starCount = 150;
+    const stars = [];
+    for (let i = 0; i < starCount; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height, // start anywhere vertically
+        speed: 1 + Math.random() * 2,     // star’s downward speed
+        radius: Math.random() * 1.5
+      });
+    }
+
+    // Game state
+    let score = 0;
+    let gameSpeed = 5;
+    let gameOver = false;
+    let highScore = localStorage.getItem('highScore') || 0;
+    let level = 1; // if you have level logic
+
+    // Player (spaceship cockpit view)
+    let player = {
+      targetLane: 1,
+      x: laneCenters[1],
+      speed: 0.1,
+      lasers: 5,
+      health: 100,
+      width: 40,
+      steeringAngle: 0,
+
+      // NEW: Shield system
+      shieldActive: false,
+      shieldTime: 0,     // frames left of shield
+      shieldHits: 0      // hits left
+    };
+
+    // Object arrays
+    let obstacles = [];       // enemy starships
+    let lasersArr = [];       // laser beams
+    let pickups = [];         // ammo pickups
+    let healthBoosters = [];  // health boosters
+    let shieldPickups = [];   // invincibility shield pickups
+
+    // Key states
+    const keys = { ArrowLeft: false, ArrowRight: false };
+
+    // If you have an updateLevel function, keep it:
+    function updateLevel() {
+      // Example: +1 level every 200 points
+      const newLevel = Math.floor(score / 200) + 1;
+      if (newLevel !== level) {
+        level = newLevel;
+        // (Add your lane expansions or other logic here if desired)
+      }
+      levelElement.textContent = `Level: ${level}`;
+    }
+
+    // Perspective helper functions
+    function getScreenY(z) {
+      if (z < 0) return canvas.height;
+      return horizonY + (canvas.height - horizonY) * (focalLength / (focalLength + z));
+    }
+    function getScale(z) {
+      if (z < 0) return 1;
+      return focalLength / (focalLength + z);
+    }
+    function getScreenX(x, z) {
+      return canvas.width / 2 + (x - player.x) * getScale(z);
+    }
+
+    // Touch/mouse controls
+    function handleMove(direction) {
+      if (!gameOver) {
+        if (direction === 'left' && player.targetLane > 0) {
+          player.targetLane--;
+          player.steeringAngle = -Math.PI / 6;
+        }
+        if (direction === 'right' && player.targetLane < laneCount - 1) {
+          player.targetLane++;
+          player.steeringAngle = Math.PI / 6;
+        }
+      }
+    }
+    leftControl.addEventListener('touchstart', (e) => { e.preventDefault(); handleMove('left'); });
+    rightControl.addEventListener('touchstart', (e) => { e.preventDefault(); handleMove('right'); });
+    leftControl.addEventListener('mousedown', () => handleMove('left'));
+    rightControl.addEventListener('mousedown', () => handleMove('right'));
+
+    // Laser firing
+    function fireLaser() {
+      if (player.lasers > 0 && !gameOver) {
+        lasersArr.push({
+          x: player.x,
+          z: 0,
+          speed: 15,
+          width: 5
+        });
+        player.lasers--;
+        document.getElementById('laserSound').play();
+      }
+    }
+    laserBtn.addEventListener('touchstart', (e) => { e.preventDefault(); fireLaser(); });
+    laserBtn.addEventListener('mousedown', fireLaser);
+
+    document.addEventListener('keydown', (e) => {
+      if (keys.hasOwnProperty(e.key)) keys[e.key] = true;
+      if (!gameOver) {
+        if (e.key === 'ArrowLeft') handleMove('left');
+        if (e.key === 'ArrowRight') handleMove('right');
+        if (e.key === ' ') fireLaser();
+      }
+      if (e.key === ' ' && gameOver) restartGame();
+    });
+    document.addEventListener('keyup', (e) => {
+      if (keys.hasOwnProperty(e.key)) keys[e.key] = false;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') player.steeringAngle = 0;
+    });
+
+    // Restart game
+    function restartGame() {
+      score = 0;
+      gameSpeed = 5;
+      gameOver = false;
+      obstacles = [];
+      lasersArr = [];
+      pickups = [];
+      healthBoosters = [];
+      shieldPickups = [];
+      level = 1;
+
+      player = {
+        targetLane: 1,
+        x: laneCenters[1],
+        speed: 0.1,
+        lasers: 5,
+        health: 100,
+        width: 40,
+        steeringAngle: 0,
+        shieldActive: false,
+        shieldTime: 0,
+        shieldHits: 0
+      };
+      scoreElement.textContent = 'Score: 0';
+      lasersElement.textContent = `Lasers: ${player.lasers}`;
+      healthElement.textContent = `Health: ${player.health}`;
+      levelElement.textContent = `Level: 1`;
+      gameOverScreen.style.display = 'none';
+    }
+    restartBtn.addEventListener('click', restartGame);
+    restartBtn.addEventListener('touchstart', (e) => { e.preventDefault(); restartGame(); });
+
+    // Create game objects
+    function createObject(type) {
+      const lane = Math.floor(Math.random() * laneCount);
+      let obj = {
+        type,
+        lane,
+        x: laneCenters[lane],
+        z: farZ,
+        width: 40,
+        height: 60
+      };
+      if (type === 'health' || type === 'pickup' || type === 'shield') {
+        obj.width = 30;
+        obj.height = 30;
+      }
+      return obj;
+    }
+
+    // Draw background (now with moving stars)
+    function drawBackground() {
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Move each star downward
+      for (let i = 0; i < stars.length; i++) {
+        const star = stars[i];
+        star.y += star.speed; // star moves downward
+        if (star.y > canvas.height) {
+          // re-spawn star at top
+          star.y = 0;
+          star.x = Math.random() * canvas.width;
+        }
+        // Draw star
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Draw futuristic space grid
+    function drawSpaceGrid() {
+      const nearY = getScreenY(0);
+      const farY = getScreenY(farZ);
+      ctx.strokeStyle = '#0ff';
+      ctx.lineWidth = 2;
+      // Vertical lane dividers
+      for (let k = 0; k <= laneCount; k++) {
+        const posX = -corridorWidth / 2 + k * (corridorWidth / laneCount);
+        const xNear = getScreenX(posX, 0);
+        const xFar = getScreenX(posX, farZ);
+        ctx.beginPath();
+        ctx.moveTo(xNear, nearY);
+        ctx.lineTo(xFar, farY);
+        ctx.stroke();
+      }
+      // Horizontal grid lines
+      for (let z = 0; z < farZ; z += 50) {
+        const y = getScreenY(z);
+        const leftX = getScreenX(-corridorWidth / 2, z);
+        const rightX = getScreenX(corridorWidth / 2, z);
+        ctx.beginPath();
+        ctx.moveTo(leftX, y);
+        ctx.lineTo(rightX, y);
+        ctx.stroke();
+      }
+    }
+
+    // Draw spaceship cockpit interior (HUD)
+    function drawCockpit() {
+      // Lower dashboard
+      ctx.fillStyle = 'rgba(20, 20, 40, 0.8)';
+      ctx.fillRect(0, canvas.height - 150, canvas.width, 150);
+      // Holographic displays (left/right)
+      ctx.strokeStyle = '#0ff';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(50, canvas.height - 140, 100, 80);
+      ctx.strokeRect(canvas.width - 150, canvas.height - 140, 100, 80);
+      // Central control stick
+      const stickX = canvas.width / 2;
+      const stickY = canvas.height - 70;
+      ctx.beginPath();
+      ctx.arc(stickX, stickY, 40, 0, Math.PI * 2);
+      ctx.fillStyle = '#222';
+      ctx.fill();
+      ctx.stroke();
+
+      // If shield is active, draw a subtle glow overlay
+      if (player.shieldActive) {
+        ctx.save();
+        ctx.fillStyle = 'rgba(0,255,255,0.15)'; // slight cyan tint
+        ctx.beginPath();
+        // Big circle covering much of the screen
+        ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width * 0.7, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    // Draw game objects
+    function drawObject(obj) {
+      const screenX = getScreenX(obj.x, obj.z);
+      const screenY = getScreenY(obj.z);
+      const scale = getScale(obj.z);
+      const width = obj.width * scale;
+      const height = obj.height * scale;
+      ctx.save();
+      ctx.shadowColor = '#0ff';
+      ctx.shadowBlur = 10;
+
+      if (obj.type === 'obstacle') {
+        // Enemy starship
+        ctx.fillStyle = '#ff6347';
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(screenX, screenY - height * 0.5);
+        ctx.lineTo(screenX + width * 0.5, screenY + height * 0.5);
+        ctx.lineTo(screenX - width * 0.5, screenY + height * 0.5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        // Wing details
+        ctx.beginPath();
+        ctx.moveTo(screenX, screenY - height * 0.3);
+        ctx.lineTo(screenX + width * 0.7, screenY);
+        ctx.lineTo(screenX, screenY + height * 0.3);
+        ctx.lineTo(screenX - width * 0.7, screenY);
+        ctx.closePath();
+        ctx.stroke();
+
+      } else if (obj.type === 'pickup') {
+        // Ammo pickup (diamond)
+        ctx.fillStyle = '#00ff00';
+        ctx.beginPath();
+        ctx.moveTo(screenX, screenY - height * 0.5);
+        ctx.lineTo(screenX + width * 0.5, screenY);
+        ctx.lineTo(screenX, screenY + height * 0.5);
+        ctx.lineTo(screenX - width * 0.5, screenY);
+        ctx.closePath();
+        ctx.fill();
+
+      } else if (obj.type === 'health') {
+        // Health booster (circle with plus)
+        ctx.fillStyle = '#39FF14';
+        ctx.beginPath();
+        ctx.arc(screenX, screenY - height * 0.5, width * 0.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(screenX - width * 0.25, screenY - height * 0.5);
+        ctx.lineTo(screenX + width * 0.25, screenY - height * 0.5);
+        ctx.moveTo(screenX, screenY - height * 0.5 - width * 0.25);
+        ctx.lineTo(screenX, screenY - height * 0.5 + width * 0.25);
+        ctx.stroke();
+
+      } else if (obj.type === 'shield') {
+        // Rare invincibility shield pickup
+        // Draw a glowing cyan orb
+        ctx.fillStyle = '#00ffff';
+        ctx.beginPath();
+        ctx.arc(screenX, screenY - height * 0.5, width * 0.5, 0, Math.PI * 2);
+        ctx.fill();
+        // Add a small star inside
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(screenX, screenY - height * 0.7);
+        ctx.lineTo(screenX, screenY - height * 0.3);
+        ctx.moveTo(screenX - width * 0.2, screenY - height * 0.5);
+        ctx.lineTo(screenX + width * 0.2, screenY - height * 0.5);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // Draw laser beams
+    function drawLasers() {
+      lasersArr.forEach(laser => {
+        const screenX = getScreenX(laser.x, laser.z);
+        const screenY = getScreenY(laser.z);
+        const scale = getScale(laser.z);
+        const beamWidth = 8 * scale;
+        const beamLength = 40 * scale;
+        ctx.save();
+        ctx.shadowColor = '#00ffff';
+        ctx.shadowBlur = 20;
+        ctx.fillStyle = '#00ffff';
+        // Draw a beam as a glowing rectangle
+        ctx.fillRect(screenX - beamWidth / 2, screenY - beamLength, beamWidth, beamLength);
+        ctx.restore();
+      });
+    }
+
+    // Handle game over
+    function handleGameOver() {
+      gameOver = true;
+      finalScoreElement.textContent = score;
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('highScore', highScore);
+      }
+      highScoreElement.textContent = highScore;
+      gameOverScreen.style.display = 'block';
+      document.getElementById('collisionSound').play();
+    }
+
+    // Update shield each frame
+    function updateShield() {
+      if (player.shieldActive) {
+        // Decrement time
+        player.shieldTime--;
+        if (player.shieldTime <= 0 || player.shieldHits <= 0) {
+          player.shieldActive = false;
+        }
+      }
+    }
+
+    // Update game state
+    function update() {
+      if (gameOver) return;
+
+      // Move player toward target lane
+      const targetX = player.targetLane < laneCenters.length 
+                      ? laneCenters[player.targetLane]
+                      : laneCenters[laneCenters.length - 1];
+      player.x += (targetX - player.x) * player.speed;
+      if (Math.abs(player.x - targetX) < 0.1) {
+        player.steeringAngle *= 0.9;
+      }
+
+      // Move & remove objects
+      const allObjects = [...obstacles, ...pickups, ...healthBoosters, ...shieldPickups];
+      allObjects.forEach(obj => {
+        obj.z -= gameSpeed;
+        // Off-screen => remove + small score
+        if (obj.z < -obj.height) {
+          if (obj.type === 'obstacle') {
+            obstacles = obstacles.filter(o => o !== obj);
+          } else if (obj.type === 'pickup') {
+            pickups = pickups.filter(p => p !== obj);
+          } else if (obj.type === 'health') {
+            healthBoosters = healthBoosters.filter(h => h !== obj);
+          } else if (obj.type === 'shield') {
+            shieldPickups = shieldPickups.filter(s => s !== obj);
+          }
+          score += 10;
+        }
+      });
+
+      // Collision with obstacles => reduce health, unless shielded
+      obstacles.forEach((obj, index) => {
+        if (obj.z < 10 && Math.abs(player.x - obj.x) < (player.width + obj.width) / 2) {
+          obstacles.splice(index, 1);
+
+          if (player.shieldActive) {
+            // Use up a shield hit
+            player.shieldHits--;
+          } else {
+            // Normal damage
+            player.health -= 20;
+            document.getElementById('collisionSound').play();
+            if (player.health <= 0) handleGameOver();
+          }
+        }
+      });
+
+      // Collision with pickups => +3 lasers
+      pickups.forEach((pickup, index) => {
+        if (pickup.z < 10 && Math.abs(player.x - pickup.x) < (player.width + pickup.width) / 2) {
+          pickups.splice(index, 1);
+          player.lasers += 3;
+          document.getElementById('pickupSound').play();
+        }
+      });
+
+      // Collision with health => +20 HP
+      healthBoosters.forEach((booster, index) => {
+        if (booster.z < 10 && Math.abs(player.x - booster.x) < (player.width + booster.width) / 2) {
+          healthBoosters.splice(index, 1);
+          player.health = Math.min(100, player.health + 20);
+          document.getElementById('healthSound').play();
+        }
+      });
+
+      // Collision with shield => become invincible for 10s or 3 hits
+      shieldPickups.forEach((shieldObj, index) => {
+        if (shieldObj.z < 10 && Math.abs(player.x - shieldObj.x) < (player.width + shieldObj.width) / 2) {
+          shieldPickups.splice(index, 1);
+          // Activate or refresh shield
+          player.shieldActive = true;
+          player.shieldTime = 60 * 10;  // 10 seconds at ~60 fps
+          player.shieldHits = 3;        // up to 3 hits
+          document.getElementById('pickupSound').play();
+        }
+      });
+
+      // Lasers update + collision with obstacles => +50 points
+      lasersArr.forEach((laser, lIndex) => {
+        laser.z += laser.speed;
+        if (laser.z > farZ) {
+          lasersArr.splice(lIndex, 1);
+          return;
+        }
+        obstacles.forEach((obj, oIndex) => {
+          if (
+            Math.abs(laser.z - obj.z) < 10 &&
+            Math.abs(laser.x - obj.x) < (laser.width + obj.width) / 2
+          ) {
+            lasersArr.splice(lIndex, 1);
+            obstacles.splice(oIndex, 1);
+            score += 50;
+          }
+        });
+      });
+
+      // Random spawns
+      if (Math.random() < 0.02) obstacles.push(createObject('obstacle'));
+      if (Math.random() < 0.005) pickups.push(createObject('pickup'));
+      if (Math.random() < 0.003) healthBoosters.push(createObject('health'));
+      // Rare shield pickup
+      if (Math.random() < 0.001) shieldPickups.push(createObject('shield'));
+
+      // Update HUD
+      scoreElement.textContent = `Score: ${score}`;
+      lasersElement.textContent = `Lasers: ${player.lasers}`;
+      healthElement.textContent = `Health: ${player.health}`;
+
+      // Slowly increase speed
+      gameSpeed += 0.001;
+
+      // Update shield
+      updateShield();
+
+      // If you have level expansions, do them:
+      updateLevel();
+    }
+
+    // Draw everything
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBackground();
+      drawSpaceGrid();
+      // Combine objects for drawing
+      const allObjects = [...obstacles, ...pickups, ...healthBoosters, ...shieldPickups];
+      allObjects.forEach(drawObject);
+      drawLasers();
+      drawCockpit();
+    }
+
+    // Main game loop
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Initialize
+    highScoreElement.textContent = highScore;
+    gameLoop();
+  </script>
+</body>
+</html>
