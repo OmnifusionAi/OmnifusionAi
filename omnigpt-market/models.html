@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Model List</title>
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <h1>Available Models</h1>
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Search GPTs..."
+      style="width: 90%; max-width: 500px; margin: 1em auto; display: block; padding: 0.5em; font-size: 1rem;"
+    />
+    <select id="categoryFilter" style="width: 90%; max-width: 500px; margin: 1em auto; display: block; padding: 0.5em; font-size: 1rem;">
+      <option value="all">All</option>
+      <option value="Productivity">Productivity</option>
+      <option value="Image Generation">Image Generation</option>
+      <option value="AI Tools">AI Tools</option>
+      <option value="Finance">Finance</option>
+      <option value="Entertainment">Entertainment</option>
+    </select>
+    <ul id="model-list"></ul>
+    <script src="assets/scripts.js"></script>
+</body>
+</html>
