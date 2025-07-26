@@ -1,0 +1,8 @@
+{
+  "name": "omnifusionai",
+  "version": "1.0.0",
+  "description": "OmniGPT Market demo",
+  "scripts": {
+    "test": "echo \"No tests yet\""
+  }
+}
