@@ -1,0 +1,290 @@
+[
+  {
+    "id": "doll_ppelganger",
+    "title": "Doll-ppelgänger",
+    "category": "Image Generation",
+    "description": "Turn yourself into a toy, figurine, or collectible character.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-67fab95fc3cc8191ba8625295ee20af0-doll-ppelganger"
+  },
+  {
+    "id": "alt_coin_prediction_2",
+    "title": "Alt Coin Prediction 2.0",
+    "category": "Finance",
+    "description": "Predict short-term price action for low-cap altcoins.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-67df3e79fc308191a0e5420003510938-alt-coin-prediction-2-0"
+  },
+  {
+    "id": "music_manager_pro",
+    "title": "Music Manager Marketing Pro",
+    "category": "Productivity",
+    "description": "Offers structured campaigns, artist management tools, and booking resources.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-etPjATntE-music-manager-marketing-pro"
+  },
+  {
+    "id": "aladdin",
+    "title": "ALADDIN",
+    "category": "Finance",
+    "description": "Identifies and predicts crypto breakout opportunities using advanced financial analytics.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-8TEaWFPyh-aladdin"
+  },
+  {
+    "id": "garbage_paild",
+    "title": "Garbage Pail’d",
+    "category": "Image Generation",
+    "description": "Turn yourself into a twisted, Garbage Pail Kid–style character.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-681e910380088191a4e61ee291133f43-garbage-paild"
+  },
+  {
+    "id": "music_mastering_pro",
+    "title": "Music Mastering Pro",
+    "category": "Music",
+    "description": "Professional-grade mastering guidance with EQ, RMS, and LUFS settings.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-nGhg1Z2I7-music-mastering-pro"
+  },
+  {
+    "id": "event_planner_pro",
+    "title": "Event Planner Pro",
+    "category": "Business Assistant",
+    "description": "Helps organize events, plan venues, manage logistics, and coordinate staff.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-SNVLHp39z-event-planner-pro"
+  },
+  {
+    "id": "prompt_perfectionist",
+    "title": "Prompt Perfectionist",
+    "category": "AI Tools",
+    "description": "Refines and optimizes long-form prompts for clearer AI interactions.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-9D45h8QHt-prompt-perfectionist"
+  },
+  {
+    "id": "ultra_hyperrealistic_image_gen",
+    "title": "Ultra Hyperrealistic Image Generator",
+    "category": "Image Generation",
+    "description": "Produces ultra-realistic images using advanced, detailed prompts optimized for DALL·E.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-lQcpyrgDW-ultra-hyperrealistic-image-generator"
+  },
+  {
+    "id": "ultimate_legal_assistant",
+    "title": "Ultimate Legal Assistant",
+    "category": "Legal",
+    "description": "Creates thorough legal documents, contracts, disclaimers, and more.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-tbJ7XAfqM-ultimate-legal-assistant"
+  },
+  {
+    "id": "ai_movie_director",
+    "title": "AI Movie Director",
+    "category": "Creative Tools",
+    "description": "Guides scriptwriting, storyboarding, and film-scene creation visually.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-CCoLrA7cB-ai-movie-director"
+  },
+  {
+    "id": "autogpt",
+    "title": "AutoGPT",
+    "category": "AI Tools",
+    "description": "Self-running GPT designed to automate and manage interconnected AI tasks.",
+    "price": 1.99,
+    "trial": false,
+    "url": ""
+  },
+  {
+    "id": "deal_finder",
+    "title": "Deal Finder",
+    "category": "Productivity",
+    "description": "Discovers hidden coupons, promotions, and best deals online.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-v6sFiJn1y-deal-finder"
+  },
+  {
+    "id": "godmode",
+    "title": "Godmode",
+    "category": "AI Tools",
+    "description": "An autonomous GPT for orchestrating complex, multi-step tasks and workflows.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-Cn2LeiraA-godmode"
+  },
+  {
+    "id": "prompt_compression_ai",
+    "title": "Prompt Compression AI",
+    "category": "AI Tools",
+    "description": "Shrink verbose prompts into efficient formats.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-67b1de1c235c81919ded4e6f848c7c95-prompt-compression-ai"
+  },
+  {
+    "id": "doc_bot_pro",
+    "title": "Doc Bot Pro",
+    "category": "Legal",
+    "description": "Quickly creates contracts, releases, policies, and legal documents.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-3XjoVyEQm-doc-bot-pro"
+  },
+  {
+    "id": "historical_persona_replicator",
+    "title": "Historical Persona Replicator",
+    "category": "Education",
+    "description": "Simulates accurate conversations with historical figures based on detailed biographies.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-mMAEtL2sG-historical-persona-replicator"
+  },
+  {
+    "id": "master_of_theology",
+    "title": "Master of Theology",
+    "category": "Religion & Philosophy",
+    "description": "Deep dives into biblical, historical, and theological scholarship.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-4IltnBtAt-master-of-theology"
+  },
+  {
+    "id": "flyerform",
+    "title": "Flyerform",
+    "category": "Design",
+    "description": "Create bold, genre-based flyers for events and releases.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-68096ed42fe88191a1df026ea8f80306-flyerform"
+  },
+  {
+    "id": "perfect_post",
+    "title": "Perfect Post",
+    "category": "Marketing",
+    "description": "Craft ideal social media posts with hashtags, captions, and links.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-68014afe4b28819180d6ca47198874a1-perfect-post"
+  },
+  {
+    "id": "cheat_code_central",
+    "title": "Cheat Code Central",
+    "category": "Gaming",
+    "description": "Offers game cheats, mods, walkthroughs, and character builds.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-OaI2tGDA0-cheat-code-central"
+  },
+  {
+    "id": "ultimate_diy_guide",
+    "title": "Ultimate DIY Guide",
+    "category": "Home & DIY",
+    "description": "Comprehensive DIY instructions for home, auto, and technical projects.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-qks9bxInU-ultimate-diy-guide"
+  },
+  {
+    "id": "ultimate_diy_tax_assistant",
+    "title": "Ultimate DIY Tax Assistant",
+    "category": "Finance",
+    "description": "Helps you estimate refunds, organize tax documents, and find deductions.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-PFUlNOhb5-ultimate-diy-tax-assistant"
+  },
+  {
+    "id": "career_mastermind",
+    "title": "Career Mastermind",
+    "category": "Career",
+    "description": "Guides you to find career opportunities, refine interview strategies, and optimize resumes.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-H9hCrJEgO-career-mastermind"
+  },
+  {
+    "id": "flixx_finder",
+    "title": "Flixx Finder",
+    "category": "Entertainment",
+    "description": "Find personalized recommendations for movies and TV shows tailored to your tastes.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-TV83muXT7-flixx-finder"
+  },
+  {
+    "id": "product_demo_recap_pro",
+    "title": "Product Demo Recap Pro",
+    "category": "Business Assistant",
+    "description": "Generates concise demo summaries, reports, and customer engagement stats.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-qfUvzDa13-product-demo-recap-pro"
+  },
+  {
+    "id": "aesthetics_master_guide",
+    "title": "Aesthetics Master Guide",
+    "category": "Beauty & Branding",
+    "description": "Expert guide for skincare trends, niche branding, and aesthetic identities.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-6785c8930d4481918c1dac9c9314f31d-aesthetics-master-guide"
+  },
+  {
+    "id": "authentic_writer",
+    "title": "Authentic Writer",
+    "category": "Writing",
+    "description": "Personalized creative writing assistant tuned to your individual voice.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-svoOtspDp-authentic-writer"
+  },
+  {
+    "id": "crypto_prediction",
+    "title": "Crypto Prediction",
+    "category": "Finance",
+    "description": "Analyzes crypto market movements, specializing in short-term altcoin spikes.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-67328932ad5481909d5fc2ae022f3846-crypto-prediction"
+  },
+  {
+    "id": "anamorph",
+    "title": "Anamorph",
+    "category": "Art & Fantasy",
+    "description": "Transform pets into ultra-realistic humanoid or fantasy characters.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-681ec3071a688191ab298267c1ec4147-anamorph"
+  },
+  {
+    "id": "pic_u_fighter",
+    "title": "Pic-U Fighter Character Select",
+    "category": "Image Generation",
+    "description": "Generate stylized fighting-game characters from photos.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-68017a7cf7188191a71a51febce7642d-pic-u-fighter-character-select"
+  },
+  {
+    "id": "schedule_assistant",
+    "title": "Schedule Assistant",
+    "category": "Productivity",
+    "description": "Generate downloadable schedules from calendar data.",
+    "price": 1.99,
+    "trial": true,
+    "url": "https://chatgpt.com/g/g-680d63d44b6c819193d796a69301845d-schedule-assistant"
+  }
+]

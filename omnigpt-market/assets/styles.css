@@ -1,0 +1,48 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    color: #333;
+}
+
+@media screen and (max-width: 768px) {
+  .model-grid {
+    grid-template-columns: 1fr;
+    padding: 1em;
+  }
+
+  .site-header h1,
+  .site-header p,
+  .site-footer p {
+    font-size: 1rem;
+    padding: 0.5em 1em;
+  }
+
+  .cta-button {
+    font-size: 0.9rem;
+    padding: 0.5em 1em;
+  }
+
+  select#categoryFilter {
+    margin: 1em auto;
+    display: block;
+    width: 90%;
+    padding: 0.5em;
+    font-size: 1rem;
+  }
+
+  .model-card {
+    padding: 1em;
+  }
+
+  .model-card h3 {
+    font-size: 1.2rem;
+  }
+
+  .model-card p {
+    font-size: 0.95rem;
+  }
+}
