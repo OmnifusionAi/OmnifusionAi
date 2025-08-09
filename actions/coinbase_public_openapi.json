@@ -1,0 +1,61 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Coinbase Advanced Trade (Public Market Data)",
+    "version": "1.0.0",
+    "description": "Public endpoints for Coinbase market data: products, candles, ticker, and order book."
+  },
+  "servers": [{ "url": "https://api.coinbase.com" }],
+  "paths": {
+    "/api/v3/brokerage/market/products": {
+      "get": {
+        "operationId": "listPublicProducts",
+        "summary": "List public products",
+        "parameters": [
+          { "name": "product_type", "in": "query", "schema": { "type": "string", "enum": ["SPOT","FUTURE","UNKNOWN_PRODUCT_TYPE"] } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer" } },
+          { "name": "offset", "in": "query", "schema": { "type": "integer" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v3/brokerage/market/products/{product_id}/candles": {
+      "get": {
+        "operationId": "getPublicCandles",
+        "summary": "Get public candles",
+        "parameters": [
+          { "name": "product_id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "start", "in": "query", "required": true, "schema": { "type": "string", "description": "UNIX seconds" } },
+          { "name": "end", "in": "query", "required": true, "schema": { "type": "string", "description": "UNIX seconds" } },
+          { "name": "granularity", "in": "query", "required": true, "schema": { "type": "string", "enum": ["ONE_MINUTE","FIVE_MINUTE","FIFTEEN_MINUTE","THIRTY_MINUTE","ONE_HOUR","TWO_HOUR","FOUR_HOUR","SIX_HOUR","ONE_DAY"] } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "description": "max 350" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v3/brokerage/market/products/{product_id}/ticker": {
+      "get": {
+        "operationId": "getPublicTicker",
+        "summary": "Get public ticker and recent trades",
+        "parameters": [
+          { "name": "product_id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer" } },
+          { "name": "start", "in": "query", "schema": { "type": "string" } },
+          { "name": "end", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v3/brokerage/market/product_book": {
+      "get": {
+        "operationId": "getPublicBook",
+        "summary": "Get order book (bids/asks)",
+        "parameters": [
+          { "name": "product_id", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "description": "number of levels" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    }
+  }
+}
